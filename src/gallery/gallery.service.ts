@@ -1,41 +1,41 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Gallery } from 'src/schemas/gallery.schema';
+import { UserRepository } from 'src/user/user.repository';
+import { User } from '../schemas/user.schema';
 import { LocalService } from '../upload/local.service';
 import { GalleryDataDTO } from './dtos/gallery-data.dto';
-
-export interface User {
-  name: string;
-  email: string;
-  gallery: Gallery[];
-}
-
-interface Gallery {
-  image_url: string;
-  title: string;
-  category: string;
-}
+import { GalleryRepository } from './gallery.repository';
 
 @Injectable()
 export class GalleryService {
   constructor(
+    private galleryRepository: GalleryRepository,
+    private userRepository: UserRepository,
     private localService: LocalService,
   ) { }
 
-  findGalleryByUser(category: string): User {
-    const foundUser = {} as User;
-
-    if (!foundUser) {
-      throw new NotFoundException(`Category "${category}" not found`);
-    }
-
-    return foundUser;
+  async findGallery(userId: string): Promise<Gallery[]> {
+    return this.galleryRepository.findGallery(userId);
   }
 
-  insertNewPhoto({
-    category,
-    title,
-  }: GalleryDataDTO,
-    file: Express.Multer.File,
-    userId: string) {
+  async findGalleryByCategory(category: string, userId: string): Promise<Gallery[]> {
+    return this.galleryRepository.findGalleryByCategory(category, userId);
+  }
 
+  async insertNewPhoto(
+    galleryDataDTO: GalleryDataDTO,
+    file: Express.Multer.File,
+    userId: string): Promise<Gallery> {
+    const user = await this.userRepository.findUser(userId);
+
+    if (!user) {
+      throw new NotFoundException(`User "${userId}" does not exist`);
+    }
+
+    const fileName = await this.localService.uploadFile(file, userId);
+
+    const photo = await this.galleryRepository.insertNewPhoto(fileName, galleryDataDTO, user);
+
+    return photo;
   }
 }
