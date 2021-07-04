@@ -1,5 +1,6 @@
+import * as fs from 'fs';
 import { Injectable } from '@nestjs/common';
-import fs from 'fs';
+import { randomBytes } from 'crypto';
 import { resolve } from 'path';
 
 @Injectable()
@@ -7,7 +8,7 @@ export class LocalService {
   async uploadFile(file: Express.Multer.File, id: string) {
     const [, fileExtension] = file.originalname.split('.');
 
-    const fileName = `${id}-${fileExtension}`;
+    const fileName = `${id}-${Date.now()}-${randomBytes(12).toString('hex')}.${fileExtension}`;
 
     const filePath = resolve(__dirname, '..', '..', 'tmp', 'images', fileName);
 
