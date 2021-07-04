@@ -7,6 +7,7 @@ services:
     environment: 
       MONGO_INITDB_ROOT_PASSWORD: gallery
       MONGO_INITDB_ROOT_USERNAME: gallery
+      MONGO_INITDB_DATABASE: gallery
     ports:
       - 27017:27017
 
