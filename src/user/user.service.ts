@@ -1,15 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { hash } from 'bcryptjs';
 import { CreateUserDTO } from './dtos/create-user.dto';
-import { User } from './schemas/user.schema';
+import { User } from '../schemas/user.schema';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('User')
-    private userModel: Model<User>
+    private userRepository: UserRepository
   ) { }
 
   async createUser({
@@ -22,7 +20,7 @@ export class UserService {
       throw new BadRequestException('Passwords must match!');
     }
 
-    const foundUserWithEmail = await this.userModel.findOne({ email });
+    const foundUserWithEmail = await this.userRepository.findByEmail(email);
 
     if (foundUserWithEmail) {
       throw new BadRequestException(`User already registered with email "${email}"`);
@@ -30,14 +28,7 @@ export class UserService {
 
     const encryptedPassword = await hash(password, 10);
 
-    const user = new this.userModel({
-      email,
-      name,
-      password: encryptedPassword,
-      gallery: [],
-    }); 
-
-    await user.save();
+    const user = await this.userRepository.createUser({ email, name, password: encryptedPassword });
 
     user.password = undefined;
 
