@@ -1,10 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
-export class CreateUserDTO {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
+export class AuthDataDTO {
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -14,10 +10,4 @@ export class CreateUserDTO {
   @MinLength(6)
   @MaxLength(20)
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
-  @MaxLength(20)
-  confirm_password?: string;
 }
