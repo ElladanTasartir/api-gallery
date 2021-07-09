@@ -18,7 +18,7 @@ export class GalleryService {
     return this.galleryRepository.findGallery(userId);
   }
 
-  async findGalleryByCategory(category: string, userId: string): Promise<Gallery[]> {
+  async findGalleryByCategory(category: string[], userId: string): Promise<Gallery[]> {
     return this.galleryRepository.findGalleryByCategory(category, userId);
   }
 

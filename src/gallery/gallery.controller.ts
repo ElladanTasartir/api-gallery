@@ -21,7 +21,9 @@ export class GalleryController {
       return this.galleryService.findGallery(userId);
     }
 
-    return this.galleryService.findGalleryByCategory(category, userId);
+    const categoriesArray = category.split(',');
+
+    return this.galleryService.findGalleryByCategory(categoriesArray, userId);
   }
 
   @Post()
