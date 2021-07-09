@@ -35,13 +35,11 @@ export class GalleryRepository {
     }]);
   }
 
-  async findGalleryByCategory(category: string, userId: string): Promise<Gallery[]> {
+  async findGalleryByCategory(categories: string[], userId: string): Promise<Gallery[]> {
     const query = {
       _id: Types.ObjectId(userId),
-      gallery: {
-        $elemMatch: {
-          category,
-        }
+      'gallery.category': {
+        $in: categories,
       }
     };
 
@@ -62,7 +60,9 @@ export class GalleryRepository {
       $project: projection,
     }, {
       $match: {
-        category,
+        category: {
+          $in: categories
+        }
       }
     }]);
   }
