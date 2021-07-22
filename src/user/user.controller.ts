@@ -1,12 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { CreateUserDTO } from './dtos/create-user.dto';
 import { UserService } from './user.service';
 
-// Requisição -> localhost:3000/users
-// Verbos HTTP
-// GET -> PEGAR UM DADO
-// POST -> CRIAR DADOS
-// DELETE -> DELETAR UM DADO
-// PUT -> ALTERAR DADOS
 @Controller('users')
 export class UserController {
   constructor(
@@ -14,15 +9,15 @@ export class UserController {
   ) { }
 
   @Get()
-  getUsers() {
-    return this.userService.users;
+  listUsers() {
+    return this.userService.listUsers();
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   createUser(
-    @Body() data: any,
+    @Body() createUserDTO: CreateUserDTO,
   ) {
-    const users = this.userService.createUser(data);
-    return users;
+    return this.userService.createUser(createUserDTO);
   }
 }
