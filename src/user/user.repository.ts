@@ -11,8 +11,10 @@ export class UserRepository {
     private userModel: Model<User>,
   ) { }
 
-  async listUsers() {
-    return this.userModel.find();
+  async findUser(userId: string) {
+    return this.userModel.findOne({
+      _id: userId,
+    });
   }
 
   async findUserByEmail(email: string) {
@@ -26,6 +28,7 @@ export class UserRepository {
       name,
       email,
       password,
+      gallery: [],
     });
 
     await createdUser.save();

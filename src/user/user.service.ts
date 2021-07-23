@@ -9,10 +9,6 @@ export class UserService {
     private userRepository: UserRepository,
   ) { }
 
-  listUsers() {
-    return this.userRepository.listUsers();
-  }
-
   async createUser({
     email,
     name,

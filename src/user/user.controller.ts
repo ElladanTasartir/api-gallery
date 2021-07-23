@@ -8,11 +8,6 @@ export class UserController {
     private userService: UserService,
   ) { }
 
-  @Get()
-  listUsers() {
-    return this.userService.listUsers();
-  }
-
   @Post()
   @UsePipes(ValidationPipe)
   createUser(
